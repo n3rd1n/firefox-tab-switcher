@@ -5,3 +5,4 @@ node_modules/
 *.zip
 .env*
 .claude/
+.amo-upload-uuid
