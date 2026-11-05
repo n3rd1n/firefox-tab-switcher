@@ -1,0 +1,7 @@
+.DS_Store
+web-ext-artifacts/
+node_modules/
+*.xpi
+*.zip
+.env*
+.claude/

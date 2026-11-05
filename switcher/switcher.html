@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>Tabs</title>
+  <link rel="stylesheet" href="switcher.css">
+</head>
+<body>
+  <header>
+    <span id="mode" class="mode">NORMAL</span>
+    <label class="search">
+      <span class="slash">/</span>
+      <input id="search" type="text" placeholder="suchen" autocomplete="off" spellcheck="false">
+    </label>
+  </header>
+  <ul id="list" tabindex="0"></ul>
+  <footer>
+    <div id="msg"></div>
+    <div class="hints">
+      <span><kbd>j</kbd><kbd>k</kbd> wechseln</span>
+      <span><kbd>↵</kbd> fertig</span>
+      <span><kbd>dd</kbd> schliessen</span>
+      <span><kbd>z</kbd> zurückholen</span>
+      <span><kbd>m</kbd><kbd>'</kbd> marks</span>
+    </div>
+  </footer>
+  <script src="fuzzy.js"></script>
+  <script src="switcher.js"></script>
+</body>
+</html>

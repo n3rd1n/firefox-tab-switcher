@@ -1,0 +1,218 @@
+:root {
+  --bg: #f6f5f2;
+  --panel: #ffffff;
+  --fg: #1f1e1c;
+  --muted: #8a877f;
+  --faint: #c9c5bb;
+  --line: #e6e3dc;
+  --accent: #3d5afe;
+  --accent-soft: #e8ecff;
+  --hl: #e8590c;
+  --normal: #3d5afe;
+  --search: #e8590c;
+  --kbd-bg: #ecebe6;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #151517;
+    --panel: #1d1d20;
+    --fg: #ecebe8;
+    --muted: #8d8b93;
+    --faint: #4a4950;
+    --line: #2a2a2f;
+    --accent: #8c9eff;
+    --accent-soft: #262b45;
+    --hl: #ffa94d;
+    --normal: #8c9eff;
+    --search: #ffa94d;
+    --kbd-bg: #2a2a2f;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  font: 13px/1.35 -apple-system, system-ui, sans-serif;
+  overflow: hidden;
+}
+
+body { display: flex; flex-direction: column; }
+
+/* ---------- Kopfzeile ---------- */
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 12px 10px;
+}
+
+.mode {
+  flex: none;
+  padding: 3px 7px;
+  border-radius: 5px;
+  background: var(--normal);
+  color: var(--panel);
+  font: 700 10px/1.4 ui-monospace, "SF Mono", monospace;
+  letter-spacing: 0.06em;
+}
+body.search-mode .mode { background: var(--search); }
+
+.search {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+body.search-mode .search { border-color: var(--search); }
+
+.slash {
+  color: var(--muted);
+  font: 600 13px ui-monospace, "SF Mono", monospace;
+}
+
+#search {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+}
+
+/* ---------- Liste ---------- */
+
+#list {
+  flex: 1;
+  margin: 0;
+  padding: 0 8px 8px;
+  list-style: none;
+  overflow-y: auto;
+  outline: none;
+}
+
+#list li {
+  display: grid;
+  grid-template-columns: 22px 20px 1fr auto;
+  grid-template-rows: auto auto;
+  column-gap: 8px;
+  align-items: center;
+  padding: 7px 10px 7px 4px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+#list li + li { margin-top: 1px; }
+#list li:hover { background: var(--line); }
+#list li.sel {
+  background: var(--accent-soft);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* relative Zeilennummern wie :set relativenumber */
+.num {
+  grid-row: span 2;
+  text-align: right;
+  color: var(--faint);
+  font: 11px ui-monospace, "SF Mono", monospace;
+}
+li.sel .num { color: var(--accent); font-weight: 700; }
+
+.favicon {
+  grid-row: span 2;
+  width: 20px;
+  height: 20px;
+  padding: 2px;
+  border-radius: 5px;
+  background: var(--panel);
+}
+.favicon.none { background: var(--line); }
+.favicon img { display: block; width: 16px; height: 16px; }
+
+.title, .url {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.title { font-weight: 500; }
+.url {
+  grid-column: 3;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.badges {
+  grid-row: span 2;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  font-size: 11px;
+}
+.mark {
+  min-width: 17px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  text-align: center;
+  font: 700 11px/1.2 ui-monospace, "SF Mono", monospace;
+}
+
+mark {
+  background: none;
+  color: var(--hl);
+  font-weight: 700;
+}
+
+li.discarded .title, li.discarded .favicon { opacity: 0.5; }
+
+.empty {
+  padding: 24px 12px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ---------- Fusszeile ---------- */
+
+footer {
+  padding: 8px 12px 10px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+}
+
+#msg {
+  min-height: 15px;
+  margin-bottom: 6px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: ui-monospace, "SF Mono", monospace;
+  color: var(--fg);
+}
+
+.hints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 16px;
+  margin-right: 2px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--kbd-bg);
+  color: var(--fg);
+  text-align: center;
+  font: 600 10px/16px ui-monospace, "SF Mono", monospace;
+}
