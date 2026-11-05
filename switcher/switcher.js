@@ -6,20 +6,20 @@ const modeEl = document.getElementById("mode");
 const msgEl = document.getElementById("msg");
 
 const state = {
-  windowId: Number(new URLSearchParams(location.search).get("win")), // Browserfenster, dessen Tabs wir zeigen
-  selfWindowId: null,                                                // das Switcher-Fenster selbst
-  tabs: [],        // Reihenfolge beim Öffnen (zuletzt benutzt zuerst), wird nicht umsortiert
-  items: [],       // gefilterte Einträge: {tab, titlePos, urlPos}
+  windowId: Number(new URLSearchParams(location.search).get("win")), // browser window whose tabs we show
+  selfWindowId: null,                                                // the switcher window itself
+  tabs: [],        // order at open time (most recently used first), never re-sorted
+  items: [],       // filtered entries: {tab, titlePos, urlPos}
   sel: 0,
   query: "",
   mode: "normal",  // "normal" | "search"
-  pending: "",     // angefangene Tastenfolge: "d", "g", "m", "'"
-  count: "",       // Zahl vor einem Befehl, z.B. 5j
-  marks: {},       // Buchstabe -> tabId
+  pending: "",     // started key sequence: "d", "g", "m", "'"
+  count: "",       // count before a command, e.g. 5j
+  marks: {},       // letter -> tabId
   closing: false,
 };
 
-// ---------- Hilfsfunktionen ----------
+// ---------- Helpers ----------
 
 function displayUrl(url) {
   return (url || "").replace(/^https?:\/\//, "").replace(/^www\./, "");
@@ -52,7 +52,7 @@ async function closeSwitcher() {
   await browser.windows.remove(state.selfWindowId).catch(() => {});
 }
 
-// ---------- Filtern & Rendern ----------
+// ---------- Filtering & rendering ----------
 
 function refilter(keepTabId) {
   const q = state.query.trim();
@@ -64,7 +64,7 @@ function refilter(keepTabId) {
       const m = matchTab(q, tab.title || "", displayUrl(tab.url));
       if (m) scored.push({ tab, score: m.score, titlePos: m.titlePos, urlPos: m.urlPos });
     }
-    scored.sort((a, b) => b.score - a.score); // stabil: bei Gleichstand MRU-Reihenfolge
+    scored.sort((a, b) => b.score - a.score); // stable: ties keep MRU order
     state.items = scored;
   }
   const idx = keepTabId == null ? -1 : state.items.findIndex((it) => it.tab.id === keepTabId);
@@ -110,13 +110,13 @@ function marksFor(tabId) {
 function render() {
   document.body.classList.toggle("search-mode", state.mode === "search");
   modeEl.textContent =
-    (state.mode === "search" ? "SUCHE" : "NORMAL") + (state.count || state.pending ? " " + state.count + state.pending : "");
+    (state.mode === "search" ? "SEARCH" : "NORMAL") + (state.count || state.pending ? " " + state.count + state.pending : "");
 
   listEl.textContent = "";
   if (!state.items.length) {
     const li = document.createElement("li");
     li.className = "empty";
-    li.textContent = state.query ? "Keine Treffer" : "Keine Tabs";
+    li.textContent = state.query ? "No matches" : "No tabs";
     listEl.append(li);
     return;
   }
@@ -173,7 +173,7 @@ function render() {
   if (selEl) selEl.scrollIntoView({ block: "nearest" });
 }
 
-// ---------- Aktionen ----------
+// ---------- Actions ----------
 
 function activate(tab) {
   if (!tab) return;
@@ -203,20 +203,20 @@ function closeSelected() {
   const next = state.items[state.sel + 1] || state.items[state.sel - 1];
   if (next) activate(next.tab);
   browser.tabs.remove(tab.id);
-  setMsg(`Geschlossen: ${tab.title || displayUrl(tab.url)}`);
+  setMsg(`Closed: ${tab.title || displayUrl(tab.url)}`);
 }
 
 async function restoreClosed() {
   const recent = await browser.sessions.getRecentlyClosed({ maxResults: 25 });
   const entry = recent.find((e) => e.tab);
   if (!entry) {
-    setMsg("Kein geschlossener Tab zum Wiederherstellen");
+    setMsg("No closed tab to restore");
     return;
   }
   await browser.sessions.restore(entry.tab.sessionId);
-  // Wiederherstellen holt das Browserfenster nach vorne – Fokus zurückholen
+  // Restoring brings the browser window to the front – take focus back
   await browser.windows.update(state.selfWindowId, { focused: true }).catch(() => {});
-  setMsg(`Wiederhergestellt: ${entry.tab.title || displayUrl(entry.tab.url)}`);
+  setMsg(`Restored: ${entry.tab.title || displayUrl(entry.tab.url)}`);
 }
 
 function setMark(letter) {
@@ -224,7 +224,7 @@ function setMark(letter) {
   if (!tab) return;
   state.marks[letter] = tab.id;
   browser.storage.session.set({ marks: state.marks });
-  setMsg(`Mark ${letter} gesetzt`);
+  setMsg(`Mark ${letter} set`);
   render();
 }
 
@@ -233,11 +233,11 @@ async function jumpToMark(letter) {
   let tab = null;
   if (id != null) tab = await browser.tabs.get(id).catch(() => null);
   if (!tab) {
-    setMsg(`Mark ${letter} nicht gesetzt`);
+    setMsg(`Mark ${letter} not set`);
     return;
   }
   if (tab.windowId !== state.windowId) {
-    // Tab in einem anderen Fenster: dorthin wechseln und Switcher schliessen
+    // Tab in another window: switch there and close the switcher
     await browser.tabs.update(tab.id, { active: true });
     state.windowId = tab.windowId;
     closeSwitcher();
@@ -267,7 +267,7 @@ function leaveSearch() {
   render();
 }
 
-// ---------- Tastatur ----------
+// ---------- Keyboard ----------
 
 function handleCtrlNav(e) {
   if (!e.ctrlKey || e.altKey || e.metaKey) return false;
@@ -281,7 +281,7 @@ function handleCtrlNav(e) {
 
 function onNormalKey(e) {
   if (handleCtrlNav(e)) return;
-  if (e.ctrlKey || e.altKey || e.metaKey) return; // Browser-Shortcuts durchlassen
+  if (e.ctrlKey || e.altKey || e.metaKey) return; // let browser shortcuts through
 
   const key = e.key;
   if (key === "Shift") return;
@@ -316,7 +316,7 @@ function onNormalKey(e) {
       move(-(takeCount() || 1));
       break;
     case "G": {
-      const n = takeCount(); // 5G = Zeile 5, G = letzte Zeile
+      const n = takeCount(); // 5G = line 5, G = last line
       moveTo(n ? n - 1 : state.items.length - 1);
       break;
     }
@@ -406,14 +406,14 @@ listEl.addEventListener("dblclick", (e) => {
   if (e.target.closest("li[data-index]")) confirmSelection();
 });
 
-// Klickt man ins Browserfenster, verschwindet der Switcher (wie Spotlight).
+// Clicking into the browser window dismisses the switcher (like Spotlight).
 window.addEventListener("blur", () => {
   setTimeout(() => {
     if (!document.hasFocus()) closeSwitcher();
   }, 150);
 });
 
-// ---------- Tab-Events ----------
+// ---------- Tab events ----------
 
 function upsertTab(tab) {
   const i = state.tabs.findIndex((t) => t.id === tab.id);

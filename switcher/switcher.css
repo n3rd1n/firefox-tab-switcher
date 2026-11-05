@@ -42,7 +42,7 @@ html, body {
 
 body { display: flex; flex-direction: column; }
 
-/* ---------- Kopfzeile ---------- */
+/* ---------- Header ---------- */
 
 header {
   display: flex;
@@ -89,7 +89,7 @@ body.search-mode .search { border-color: var(--search); }
   font: inherit;
 }
 
-/* ---------- Liste ---------- */
+/* ---------- List ---------- */
 
 #list {
   flex: 1;
@@ -117,7 +117,7 @@ body.search-mode .search { border-color: var(--search); }
   box-shadow: inset 3px 0 0 var(--accent);
 }
 
-/* relative Zeilennummern wie :set relativenumber */
+/* relative line numbers like :set relativenumber */
 .num {
   grid-row: span 2;
   text-align: right;
@@ -180,7 +180,7 @@ li.discarded .title, li.discarded .favicon { opacity: 0.5; }
   text-align: center;
 }
 
-/* ---------- Fusszeile ---------- */
+/* ---------- Footer ---------- */
 
 footer {
   padding: 8px 12px 10px;

@@ -1,7 +1,7 @@
 "use strict";
 
-// Kleiner fzf-artiger Matcher: Zeichen müssen in Reihenfolge vorkommen.
-// Bonus für aufeinanderfolgende Treffer und Wortanfänge, Abzug für Lücken.
+// Small fzf-style matcher: characters must appear in order.
+// Bonus for consecutive matches and word starts, penalty for gaps.
 
 function isBoundary(text, i) {
   if (i === 0) return true;
@@ -26,7 +26,7 @@ function scorePositions(text, pos) {
   return score;
 }
 
-/** Liefert {score, pos} oder null. pattern muss bereits lowercase sein. */
+/** Returns {score, pos} or null. pattern must already be lowercase. */
 function fuzzyMatch(pattern, text) {
   if (!pattern) return { score: 0, pos: [] };
   const lower = text.toLowerCase();
@@ -41,7 +41,7 @@ function fuzzyMatch(pattern, text) {
     let ti = start + 1;
     for (let pi = 1; pi < pattern.length; pi++) {
       const idx = lower.indexOf(pattern[pi], ti);
-      if (idx === -1) return best; // spätere Starts schaffen es auch nicht
+      if (idx === -1) return best; // later starts can't match either
       pos.push(idx);
       ti = idx + 1;
     }
@@ -52,8 +52,8 @@ function fuzzyMatch(pattern, text) {
 }
 
 /**
- * Durchsucht Titel und URL. Mehrere Wörter (durch Leerzeichen getrennt)
- * müssen alle irgendwo matchen. Liefert null oder
+ * Searches title and URL. Multiple words (separated by spaces)
+ * must all match somewhere. Returns null or
  * {score, titlePos: Set, urlPos: Set}.
  */
 function matchTab(query, title, url) {
@@ -62,7 +62,7 @@ function matchTab(query, title, url) {
   for (const token of tokens) {
     const t = fuzzyMatch(token, title);
     const u = fuzzyMatch(token, url);
-    const ts = t ? t.score * 1.5 : -Infinity; // Titel-Treffer zählen mehr
+    const ts = t ? t.score * 1.5 : -Infinity; // title matches weigh more
     const us = u ? u.score : -Infinity;
     if (ts === -Infinity && us === -Infinity) return null;
     if (ts >= us) {

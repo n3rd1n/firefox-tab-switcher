@@ -1,43 +1,43 @@
 # firefox-tab-switcher
 
-Firefox-Add-on zum schnellen Wechseln zwischen Tabs: ein schmales Fenster mit allen Tabs des aktuellen Fensters, Fuzzy-Suche über Titel und URL und Vim-Keybindings.
+A Firefox add-on for switching tabs quickly: a slim window listing all tabs of the current window, with fuzzy search over title and URL and Vim keybindings.
 
-Die Tabs sind nach letzter Benutzung sortiert. Beim Durchblättern wird der markierte Tab sofort aktiviert, `Enter` schliesst den Switcher.
+Tabs are sorted by most recent use. While moving through the list, the highlighted tab is activated immediately; `Enter` closes the switcher.
 
-> **Warum ein Fenster und keine Sidebar?** Firefox gibt einer Extension-Sidebar beim Öffnen per Tastenkürzel keinen Tastaturfokus ([Bug 1502713](https://bugzilla.mozilla.org/show_bug.cgi?id=1502713)). Ein eigenes Popup-Fenster bekommt den Fokus zuverlässig.
+> **Why a window and not a sidebar?** Firefox does not give keyboard focus to an extension sidebar when it is opened via a keyboard shortcut ([bug 1502713](https://bugzilla.mozilla.org/show_bug.cgi?id=1502713)). A separate popup window gets focus reliably.
 
-## Installation (Entwicklung)
+## Installation (development)
 
-1. `about:debugging#/runtime/this-firefox` öffnen
-2. *Temporäres Add-on laden…* → `manifest.json` wählen
+1. Open `about:debugging#/runtime/this-firefox`
+2. *Load Temporary Add-on…* → select `manifest.json`
 
-Oder mit [web-ext](https://github.com/mozilla/web-ext): `npx web-ext run`
+Or with [web-ext](https://github.com/mozilla/web-ext): `npx web-ext run`
 
-Benötigt Firefox 142 oder neuer.
+Requires Firefox 142 or newer.
 
-## Bedienung
+## Usage
 
-Öffnen/Schliessen: `Alt+Space` (änderbar unter `about:addons` → Zahnrad → *Erweiterungs-Tastenkürzel verwalten*)
+Open/close: `Alt+Space` (change it in `about:addons` → gear icon → *Manage Extension Shortcuts*)
 
-| Taste | Aktion |
+| Key | Action |
 |---|---|
-| `j` / `k` | runter / rauf (Tab wird sofort aktiviert) |
-| `Ctrl+J` / `Ctrl+K`, `Ctrl+N` / `Ctrl+P` | runter / rauf, auch in der Suche |
-| `gg` / `G` | ganz oben / ganz unten |
-| `5j`, `3G` … | Zahl vor dem Befehl |
-| `/` | Fuzzy-Suche (mehrere Wörter mit Leerzeichen) |
-| `Esc` | Suche verlassen → Filter löschen → Switcher schliessen |
-| `Enter` | Auswahl bestätigen und Switcher schliessen |
-| `q` | Switcher schliessen |
-| `dd` | Tab schliessen |
-| `z` | zuletzt geschlossenen Tab wiederherstellen |
-| `m` + Buchstabe | Tab markieren |
-| `'` + Buchstabe | zum markierten Tab springen |
+| `j` / `k` | down / up (tab is activated immediately) |
+| `Ctrl+J` / `Ctrl+K`, `Ctrl+N` / `Ctrl+P` | down / up, also while searching |
+| `gg` / `G` | top / bottom |
+| `5j`, `3G` … | count prefix |
+| `/` | fuzzy search (multiple words separated by spaces) |
+| `Esc` | leave search → clear filter → close switcher |
+| `Enter` | confirm selection and close switcher |
+| `q` | close switcher |
+| `dd` | close tab |
+| `z` | restore most recently closed tab |
+| `m` + letter | mark tab |
+| `'` + letter | jump to marked tab |
 
-## Berechtigungen
+## Permissions
 
-- `tabs`: Titel und URLs der Tabs lesen
-- `sessions`: geschlossene Tabs wiederherstellen
-- `storage`: Markierungen für die laufende Sitzung speichern
+- `tabs`: read tab titles and URLs
+- `sessions`: restore closed tabs
+- `storage`: keep marks for the current session
 
-Es werden keine Daten gesammelt oder übertragen.
+No data is collected or transmitted.

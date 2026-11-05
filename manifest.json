@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Tab Switcher",
   "version": "0.2.0",
-  "description": "Tab-Liste mit Fuzzy-Suche und Vim-Keybindings.",
+  "description": "Tab list with fuzzy search and Vim keybindings.",
   "permissions": ["tabs", "sessions", "storage"],
   "icons": {
     "48": "icons/icon.svg",
@@ -16,7 +16,7 @@
       "suggested_key": {
         "default": "Alt+Space"
       },
-      "description": "Tab Switcher öffnen/schliessen"
+      "description": "Open/close Tab Switcher"
     }
   },
   "browser_specific_settings": {
